@@ -1,0 +1,23 @@
+apiVersion: v1
+metadata:
+  name: {{ include "rstudio.fullname" . }}-mutableconfigs
+  labels:
+    app.kubernetes.io/name: {{ include "rstudio.name" . }}
+    helm.sh/chart: {{ include "rstudio.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- if .Values.useSecretConfigs }}
+kind: Secret
+type: Opaque
+stringData:
+{{- else }}
+kind: ConfigMap
+data:
+{{- end }}
+  {{- range $entry := .Values.mutableConfigs -}}
+  {{- if $entry -}}
+  {{- $entry.fileName | nindent 4 }}: |
+    {{- $entry.contents | nindent 8 }}
+  {{- end -}}
+  {{- end -}}
+---

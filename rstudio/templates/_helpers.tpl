@@ -61,3 +61,23 @@ Create the name of the service account to use
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return which PVC to use
+*/}}
+{{- define "rstudio.pvcname" -}}
+{{- if .Values.persistence.existingClaim -}}
+{{- printf "%s" .Values.persistence.existingClaim -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name .Values.persistence.name -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Creates the bash command for the init containers used to place files and change permissions in the rstudio pods
+*/}}
+{{- define "rstudio.init-container-commands" -}}
+cp -anrL /opt/configs/readonly/rstudio/ /home/;
+chown -R rstudio:rstudio /home/rstudio
+{{- end -}}
+
