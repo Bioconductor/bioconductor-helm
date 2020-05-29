@@ -69,3 +69,30 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+persistence:
+  enabled: true
+  name: rstudio-pvc
+  # annotations: {}
+  storageClass: ""
+  # existingClaim:
+  accessMode: ReadWriteMany
+  size: 10Gi
+  mountPath: /home/rstudio
+
+# extraVolumes:
+#   - name: shared-data
+#     persistentVolumeClaim:
+#       claimName: shared-data-pvc
+
+# extraVolumeMounts:
+#   - name: shared-data
+#     mountPath: /opt/project/shared-data
+
+useSecretConfigs: false
+
+# mutableConfigs:
+#   - fileName: user-settings
+#     subPath: ".rstudio/monitored/user-settings/"
+#     contents: |
+#      initialWorkingDirectory="/opt/project/shared-data"

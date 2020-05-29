@@ -21,6 +21,24 @@ spec:
       serviceAccountName: {{ include "rstudio.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: {{ .Chart.Name }}-init-mounts
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command: ['sh', '-c', {{ include "rstudio.init-container-commands" . | squote }}]
+          volumeMounts:
+            {{- range $entry := .Values.mutableConfigs }}
+            {{ if $entry -}}
+            - name: rstudio-mutable-conf-files
+              mountPath: /opt/configs/readonly/rstudio/{{$entry.subPath}}/{{ $entry.fileName }}
+              subPath: {{ $entry.fileName }}
+            {{- end -}}
+            {{- end }}
+            - name: rstudio-data
+              mountPath: {{.Values.persistence.mountPath}}
+              subPath: rstudio
+            {{- if .Values.extraVolumeMounts }}
+            {{- .Values.extraVolumeMounts | toYaml | nindent 12 }}
+            {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -44,6 +62,20 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            {{- range $entry := .Values.mutableConfigs }}
+            {{ if $entry -}}
+            - name: rstudio-mutable-conf-files
+              mountPath: /opt/configs/readonly/rstudio/{{$entry.subPath}}/{{ $entry.fileName }}
+              subPath: {{ $entry.fileName }}
+            {{- end -}}
+            {{- end }}
+            - name: rstudio-data
+              mountPath: {{.Values.persistence.mountPath}}
+              subPath: rstudio
+            {{- if .Values.extraVolumeMounts }}
+            {{- .Values.extraVolumeMounts | toYaml | nindent 12 }}
+            {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -56,3 +88,22 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+      volumes:
+        - name: rstudio-mutable-conf-files
+          {{- if .Values.useSecretConfigs }}
+          secret:
+            secretName: {{ template "rstudio.fullname" . }}-mutableconfigs
+          {{- else }}
+          configMap:
+            name: {{ template "rstudio.fullname" . }}-mutableconfigs
+          {{- end }}
+        - name: rstudio-data
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "rstudio.pvcname" . }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        {{- if .Values.extraVolumes }}
+        {{- .Values.extraVolumes | toYaml | nindent 8 }}
+        {{- end }}
