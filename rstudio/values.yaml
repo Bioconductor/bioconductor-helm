@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: rocker/rstudio
+  repository: bioconductor/bioconductor_docker
   tag: latest
   pullPolicy: IfNotPresent
 
