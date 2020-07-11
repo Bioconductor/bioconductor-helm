@@ -4,6 +4,16 @@ metadata:
   name: {{ include "rstudio.fullname" . }}
   labels:
     {{- include "rstudio.labels" . | nindent 4 }}
+  annotations:
+    authproxy.stakater.com/enabled: "true"
+    authproxy.stakater.com/source-service-name: {{ .Release.Name }}-service
+    authproxy.stakater.com/upstream-url: "http://localhost:8787/"
+    authproxy.stakater.com/client-id: {{ .Values.oidc.client_id }}
+    authproxy.stakater.com/client-secret: {{ .Values.oidc.client_secret }}
+    authproxy.stakater.com/listen: ":80"
+    authproxy.stakater.com/discovery-url: {{ tpl .Values.oidc.discovery_url . }}
+    authproxy.stakater.com/oauth-uri: "{{ .Values.ingress.access_path }}/oauth"
+    authproxy.stakater.com/gatekeeper-image: keycloak/keycloak-gatekeeper:7.0.0
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -50,16 +60,16 @@ spec:
               value: "true"
           ports:
             - name: http
-              containerPort: 8787
+              containerPort: 80
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /
-              port: http
+              port: 8787
           readinessProbe:
             httpGet:
               path: /
-              port: http
+              port: 8787
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:

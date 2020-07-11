@@ -38,6 +38,7 @@ service:
   port: 80
 
 ingress:
+  access_path: /rstudio
   enabled: true
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
@@ -69,6 +70,11 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+oidc:
+  client_id: "rstudio"
+  client_secret: "some_secret"
+  discovery_url: "http://cloudman-keycloak-http.cloudman.svc.cluster.local/auth/realms/master"
 
 persistence:
   enabled: true
