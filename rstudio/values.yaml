@@ -38,10 +38,13 @@ service:
   port: 80
 
 ingress:
-  access_path: /rstudio
+  access_path: /rstudio/
   enabled: true
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      # This extra rewrite restores the original url because keycloak gatekeeper expects the non-rewritten path
+      rewrite "{{ .Values.ingress.access_path }}oauth(/|$)(.*)" {{ .Values.ingress.access_path }}oauth/$2 break;
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
