@@ -79,7 +79,9 @@ spec:
             {{- end }}
             - name: rstudio-data
               mountPath: {{.Values.persistence.mountPath}}
-              subPath: rstudio
+            {{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
+            {{- end }}
             {{- if .Values.extraVolumeMounts }}
             {{- .Values.extraVolumeMounts | toYaml | nindent 12 }}
             {{- end }}
