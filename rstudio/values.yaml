@@ -79,6 +79,8 @@ persistence:
   accessMode: ReadWriteMany
   size: 10Gi
   mountPath: /home/rstudio
+  # SubPath of directory to mount/create in the volume
+  # subPath: rstudio
 
 # extraVolumes:
 #   - name: shared-data
