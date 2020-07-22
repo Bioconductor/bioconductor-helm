@@ -82,23 +82,23 @@ persistence:
   # SubPath of directory to mount/create in the volume
   # subPath: rstudio
 
-extraVolumes: []
+# extraVolumes:
 #   - name: shared-data
 #     persistentVolumeClaim:
 #       claimName: shared-data-pvc
 
-extraVolumeMounts: []
+# extraVolumeMounts:
 #   - name: shared-data
 #     mountPath: /opt/project/shared-data
 
 useSecretConfigs: false
 
-mutableConfigs: []
+# mutableConfigs:
 #   - fileName: user-settings
 #     subPath: ".rstudio/monitored/user-settings/"
 #     contents: |
 #      initialWorkingDirectory="/opt/project/shared-data"
 
-extraInitCommands: ""
+# extraInitCommands: |
 #  cp -anrL /etc/skel/. /gvl/projects/current/
 #  /galaxy/server/extra/mapped/script.sh
