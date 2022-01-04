@@ -13,7 +13,7 @@ jobs:
       - uses: cloudve/helm-ci@master
         with:
           chart-name: rstudio
-          charts-repo: cloudve/helm-charts
+          charts-repo: bioconductor/helm-charts
           github-token: ${{ secrets.CHARTS_TOKEN }}
           charts-token: ${{ secrets.CHARTS_TOKEN }}
           github-labels: ${{ join(github.event.pull_request.labels.*.name, ', ') }}
