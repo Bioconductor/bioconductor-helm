@@ -80,6 +80,10 @@ persistence:
   size: 10Gi
   mountPath: /home/rstudio
 
+extraEnv:
+  - name: DISABLE_AUTH
+    value: "true"
+
 # extraVolumes:
 #   - name: shared-data
 #     persistentVolumeClaim:

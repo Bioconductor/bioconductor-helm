@@ -45,9 +45,10 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.extraEnv }}
           env:
-            - name: DISABLE_AUTH
-              value: "true"
+            {{- tpl (toYaml .Values.extraEnv) . | nindent 12 }}
+          {{- end }}
           ports:
             - name: http
               containerPort: 8787
