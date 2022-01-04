@@ -1,30 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "rstudio.fullname" . }}
+  name: {{ include "bioconductor.fullname" . }}
   labels:
-    {{- include "rstudio.labels" . | nindent 4 }}
+    {{- include "bioconductor.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "rstudio.selectorLabels" . | nindent 6 }}
+      {{- include "bioconductor.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "rstudio.selectorLabels" . | nindent 8 }}
+        {{- include "bioconductor.selectorLabels" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      serviceAccountName: {{ include "rstudio.serviceAccountName" . }}
+      serviceAccountName: {{ include "bioconductor.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       initContainers:
         - name: {{ .Chart.Name }}-init-mounts
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          command: ['sh', '-c', {{ include "rstudio.init-container-commands" . | squote }}]
+          command: ['sh', '-c', {{ include "bioconductor.init-container-commands" . | squote }}]
           volumeMounts:
             {{- range $entry := .Values.mutableConfigs }}
             {{ if $entry -}}
@@ -93,15 +93,15 @@ spec:
         - name: rstudio-mutable-conf-files
           {{- if .Values.useSecretConfigs }}
           secret:
-            secretName: {{ template "rstudio.fullname" . }}-mutableconfigs
+            secretName: {{ template "bioconductor.fullname" . }}-mutableconfigs
           {{- else }}
           configMap:
-            name: {{ template "rstudio.fullname" . }}-mutableconfigs
+            name: {{ template "bioconductor.fullname" . }}-mutableconfigs
           {{- end }}
         - name: rstudio-data
           {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ template "rstudio.pvcname" . }}
+            claimName: {{ template "bioconductor.pvcname" . }}
           {{- else }}
           emptyDir: {}
           {{- end }}

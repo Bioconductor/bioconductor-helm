@@ -12,7 +12,7 @@ jobs:
            persist-credentials: false
       - uses: cloudve/helm-ci@master
         with:
-          chart-name: rstudio
+          chart-name: bioconductor
           charts-repo: bioconductor/helm-charts
           github-token: ${{ secrets.HELM_CHARTS_TOKEN }}
           charts-token: ${{ secrets.HELM_CHARTS_TOKEN }}

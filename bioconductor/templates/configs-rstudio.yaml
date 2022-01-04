@@ -1,9 +1,9 @@
 apiVersion: v1
 metadata:
-  name: {{ include "rstudio.fullname" . }}-mutableconfigs
+  name: {{ include "bioconductor.fullname" . }}-mutableconfigs
   labels:
-    app.kubernetes.io/name: {{ include "rstudio.name" . }}
-    helm.sh/chart: {{ include "rstudio.chart" . }}
+    app.kubernetes.io/name: {{ include "bioconductor.name" . }}
+    helm.sh/chart: {{ include "bioconductor.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- if .Values.useSecretConfigs }}

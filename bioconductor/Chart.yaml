@@ -1,6 +1,6 @@
 apiVersion: v2
-name: rstudio
-description: A Helm chart for RStudio on Kubernetes
+name: bioconductor
+description: A Helm chart for Bioconductor RStudio on Kubernetes
 
 # A chart can be either an 'application' or a 'library' chart.
 #

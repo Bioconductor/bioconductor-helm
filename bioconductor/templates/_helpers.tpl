@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "rstudio.name" -}}
+{{- define "bioconductor.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -11,7 +11,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "rstudio.fullname" -}}
+{{- define "bioconductor.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -27,16 +27,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "rstudio.chart" -}}
+{{- define "bioconductor.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
 Common labels
 */}}
-{{- define "rstudio.labels" -}}
-helm.sh/chart: {{ include "rstudio.chart" . }}
-{{ include "rstudio.selectorLabels" . }}
+{{- define "bioconductor.labels" -}}
+helm.sh/chart: {{ include "bioconductor.chart" . }}
+{{ include "bioconductor.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -46,17 +46,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "rstudio.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "rstudio.name" . }}
+{{- define "bioconductor.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "bioconductor.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end -}}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "rstudio.serviceAccountName" -}}
+{{- define "bioconductor.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-    {{ default (include "rstudio.fullname" .) .Values.serviceAccount.name }}
+    {{ default (include "bioconductor.fullname" .) .Values.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
@@ -65,7 +65,7 @@ Create the name of the service account to use
 {{/*
 Return which PVC to use
 */}}
-{{- define "rstudio.pvcname" -}}
+{{- define "bioconductor.pvcname" -}}
 {{- if .Values.persistence.existingClaim -}}
 {{- printf "%s" .Values.persistence.existingClaim -}}
 {{- else -}}
@@ -76,7 +76,7 @@ Return which PVC to use
 {{/*
 Creates the bash command for the init containers used to place files and change permissions in the rstudio pods
 */}}
-{{- define "rstudio.init-container-commands" -}}
+{{- define "bioconductor.init-container-commands" -}}
 cp -anrL /opt/configs/readonly/rstudio/ /home/;
 chown -R rstudio:rstudio /home/rstudio
 {{- end -}}
