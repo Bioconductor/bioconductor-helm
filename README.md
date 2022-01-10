@@ -40,7 +40,7 @@ minikube start
 
 2. Helm install chart with example configuration file
 
-Note: This configuration notably has RStudio running with no authentication, and no persistence; it is therefore only recommended for transient local installations and development
+Note: This configuration notably has RStudio running with no authentication, and no persistence; it is therefore only recommended for transient local installations and development.
 
 ```bash
 helm install mybioc bioconductor-helm/bioconductor -f bioconductor-helm/examples/minikube-vals.yaml
@@ -80,4 +80,75 @@ helm delete mybioc
 2. Stop minikube
 ```bash
 minikube stop
+```
+
+
+### Deploy on the Microsoft Azure cloud on an `AKS` cluster
+This assumes that you have the `Azure CLI` installed ([how to install](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-macos)),  that you are authenticated ([how to authenticate](https://docs.microsoft.com/en-us/cli/azure/authenticate-azure-cli)), and have proper permissions.
+
+
+#### Starting the deployment
+
+1. Start `AKS` cluster
+
+If you prefer to launch the AKS cluster from the web portal, or already have an existing cluster, you can skip to step 2.
+```bash
+az aks create --resource-group mypersonalrg --name my-aks-cluster --node-count 1
+```
+
+2. Point the kubeconfig context to the AKS cluster
+
+```bash
+az aks get-credentials --resource-group mypersonalrg --name my-aks-cluster
+```
+
+3. Helm install chart with example configuration file
+
+This configuration notably has RStudio running with a hardcoded password. Since your cluster will be publicly available on the internet, it is recommended you change the password in this file.
+
+This example also uses a 10Gi Azure standard SSD disk for persistence. This solution will not work well with multi-node clusters, as it is a `ReadWriteOnce` storage class, but will work on single-node clusters as is the one launched in this example.
+
+```bash
+helm install mybioc bioconductor-helm/bioconductor -f bioconductor-helm/examples/aks-vals.yaml
+```
+
+4. Check status of pods and wait until it is up and healthy
+
+If this is your first time running the chart, keep in mind that it will take a few minutes for the container images to be pulled and extracted.
+```bash
+# See pods status
+kubectl get pods
+# See recent events
+kubectl get events
+# Wait until the deployment is ready
+kubectl wait --for=condition=available --timeout=600s deployment/mybioc-bioconductor
+
+```
+
+4. Print LoadBalancer IP
+
+Once the deployment is ready, you can now access RStudio at the LoadBalancer IP.
+```bash
+echo $(kubectl get svc mybioc-bioconductor --template "{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}")
+```
+
+5. Access the public IP address in a web browser
+
+RStudio should be running at the public IP address printed by the command above.
+
+By default, you can login with user `rstudio` and the password you provided in the values file.
+
+#### Stopping the deployment
+
+1. Delete Helm release
+```bash
+helm delete mybioc
+```
+
+2. Delete the AKS cluster
+
+Note: You will be prompted for confirmation. Also keep in mind that the `default` storage class in AKS sets disks to be deleted with their corresponding persistent volumes in AKS, so all your data will be deleted.
+
+```bash
+az aks delete --resource-group mypersonalrg --name my-aks-cluster 
 ```

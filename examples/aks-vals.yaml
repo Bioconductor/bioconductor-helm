@@ -1,0 +1,21 @@
+ingress:
+  enabled: false
+persistence:
+  enabled: true
+  storageClass: default
+  size: 10Gi
+  accessMode: ReadWriteOnce
+image:
+  repository: bioconductor/bioconductor_docker
+  tag: latest
+
+securityContext:
+  runAsUser: 0
+
+service:
+  type: LoadBalancer
+  port: 80
+
+extraEnv:
+  - name: PASSWORD
+    value: "changeme"
