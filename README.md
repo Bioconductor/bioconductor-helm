@@ -27,6 +27,13 @@ For more information on `helm install` options, see the [Helm documentation](htt
 ## Deployment examples
 This Helm chart can theoretically be run on any Kubernetes cluster. Below are a few tested example deployments.
 
+| Example deployments |
+| ------------------ |
+| [Local minikube](https://github.com/Bioconductor/bioconductor-helm#deploy-locally-with-minikube) |
+| [MS Azure AKS](https://github.com/Bioconductor/bioconductor-helm#deploy-on-the-microsoft-azure-cloud-on-an-aks-cluster) |
+
+
+
 ### Deploy locally with `minikube`
 Follow the [minikube documentation](https://minikube.sigs.k8s.io/docs/start/) to install minikube for your operating system.
 
