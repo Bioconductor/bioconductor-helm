@@ -1,0 +1,15 @@
+ingress:
+  enabled: false
+persistence:
+  enabled: false
+image:
+  repository: bioconductor/bioconductor_docker
+  tag: latest
+
+service:
+  type: NodePort
+  port: 8787
+
+extraEnv:
+  - name: DISABLE_AUTH
+    value: "True"
