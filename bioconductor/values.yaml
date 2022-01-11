@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: bioconductor/bioconductor_docker
-  tag: latest
+  tag: devel
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
