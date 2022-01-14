@@ -32,6 +32,7 @@ This Helm chart can theoretically be run on any Kubernetes cluster. Below are a 
 | ------------------ |
 | [Local minikube](https://github.com/Bioconductor/bioconductor-helm#deploy-locally-with-minikube) |
 | [MS Azure AKS](https://github.com/Bioconductor/bioconductor-helm#deploy-on-the-microsoft-azure-cloud-on-an-aks-cluster) |
+| [Google Kubernetes Engine](https://github.com/Bioconductor/bioconductor-helm#deploy-on-google-cloud-on-a-gke-cluster) |
 
 ---
 
