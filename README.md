@@ -16,7 +16,7 @@ helm install myrelease ./bioconductor-helm/bioconductor
 
 Or from the packaged repository:
 ```bash
-helm repo add bioc https://github.com/Bioconductor/helm-charts/raw/main
+helm repo add bioc https://github.com/Bioconductor/helm-charts/raw/devel
 helm install myrelease bioc/bioconductor
 
 ```
