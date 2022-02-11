@@ -71,6 +71,10 @@ spec:
               subPath: {{ $entry.fileName }}
             {{- end -}}
             {{- end }}
+            {{- if and .Values.libraries.persistence.enabled .Values.libraries.persistence.separateClaim.enabled }}
+            - name: libraries
+              mountPath: {{.Values.libraries.persistence.separateClaim.mountPath}}
+            {{- end }}
             - name: rstudio-data
               mountPath: {{.Values.persistence.mountPath}}
               subPath: rstudio
@@ -105,6 +109,11 @@ spec:
           {{- else }}
           emptyDir: {}
           {{- end }}
+        {{- if and .Values.libraries.persistence.enabled .Values.libraries.persistence.separateClaim.enabled }}
+        - name: libraries
+          persistentVolumeClaim:
+            claimName: {{ template "bioconductor.librariesClaimName" . }}
+        {{- end }}
         {{- if .Values.extraVolumes }}
         {{- .Values.extraVolumes | toYaml | nindent 8 }}
         {{- end }}

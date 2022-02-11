@@ -27,3 +27,32 @@ spec:
       storage: {{ .Values.persistence.size | quote }}
 {{ end }}
 ---
+{{ if and .Values.libraries.persistence.enabled .Values.libraries.persistence.separateClaim.enabled (not .Values.libraries.persistence.separateClaim.existingClaim) -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.libraries.persistence.separateClaim.name }}
+  labels:
+    app.kubernetes.io/name: {{ include "bioconductor.name" . }}
+    helm.sh/chart: {{ include "bioconductor.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- if .Values.libraries.persistence.separateClaim.annotations }}
+  annotations:
+{{ toYaml .Values.libraries.persistence.separateClaim.annotations | indent 4 }}
+{{- end }}
+spec:
+  {{- if .Values.libraries.persistence.separateClaim.storageClass }}
+  {{- if (eq "-" .Values.libraries.persistence.separateClaim.storageClass) }}
+  storageClassName: ""
+  {{- else }}
+  storageClassName: "{{ .Values.libraries.persistence.separateClaim.storageClass }}"
+  {{- end }}
+  {{- end }}
+  accessModes:
+    - {{ .Values.libraries.persistence.separateClaim.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.libraries.persistence.separateClaim.size | quote }}
+{{ end }}
+---

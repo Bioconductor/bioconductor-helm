@@ -17,6 +17,6 @@ data:
   {{- range $entry := .Values.mutableConfigs -}}
   {{- if $entry -}}
   {{- $entry.fileName | nindent 4 }}: |
-    {{- $entry.contents | nindent 8 }}
+    {{- tpl $entry.contents | nindent 8 }}
   {{- end -}}
   {{- end -}}
