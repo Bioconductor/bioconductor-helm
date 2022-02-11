@@ -99,8 +99,10 @@ libraries:
       mountPath: /home/rstudio/persisted-library/R
 
 extraEnv:
-  - name: DISABLE_AUTH
-    value: "true"
+  - name: PASSWORD
+    value: "changeme"
+  # - name: DISABLE_AUTH
+  #   value: "true"
 
 # extraVolumes:
 #   - name: shared-data
