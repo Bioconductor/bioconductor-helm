@@ -29,7 +29,7 @@ spec:
             {{- range $entry := .Values.mutableConfigs }}
             {{ if $entry -}}
             - name: rstudio-mutable-conf-files
-              mountPath: /opt/configs/readonly/rstudio/{{$entry.subPath}}/{{ $entry.fileName }}
+              mountPath: /opt/configs/readonly/rstudio/{{if $entry.subPath}}{{$entry.subPath}}/{{end}}{{ $entry.fileName }}
               subPath: {{ $entry.fileName }}
             {{- end -}}
             {{- end }}
