@@ -1,0 +1,9 @@
+libraries:
+  persistence:
+    enabled: true
+    separateClaim: 
+      enabled: true
+      name: r-libraries-pvc
+      storageClass: "rclone"
+      accessMode: ReadOnlyMany
+      mountPath: /home/rstudio/persisted-library/R
