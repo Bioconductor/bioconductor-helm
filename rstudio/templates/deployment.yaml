@@ -24,7 +24,12 @@ spec:
       initContainers:
         - name: {{ .Chart.Name }}-init-mounts
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          command: ['sh', '-c', {{ include "rstudio.init-container-commands" . | squote }}]
+          command: [
+            'sh', '-c',
+            '{{- if .Values.extraInitCommands -}}
+             {{- tpl .Values.extraInitCommands $ | nindent 13 }};
+             {{- end -}}
+             {{ include "rstudio.init-container-commands" . }}']
           volumeMounts:
             {{- range $entry := .Values.mutableConfigs }}
             {{ if $entry -}}
@@ -35,7 +40,9 @@ spec:
             {{- end }}
             - name: rstudio-data
               mountPath: {{.Values.persistence.mountPath}}
-              subPath: rstudio
+            {{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
+            {{- end }}
             {{- if .Values.extraVolumeMounts }}
             {{- .Values.extraVolumeMounts | toYaml | nindent 12 }}
             {{- end }}
@@ -72,7 +79,9 @@ spec:
             {{- end }}
             - name: rstudio-data
               mountPath: {{.Values.persistence.mountPath}}
-              subPath: rstudio
+            {{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
+            {{- end }}
             {{- if .Values.extraVolumeMounts }}
             {{- .Values.extraVolumeMounts | toYaml | nindent 12 }}
             {{- end }}

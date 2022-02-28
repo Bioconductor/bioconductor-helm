@@ -77,7 +77,6 @@ Return which PVC to use
 Creates the bash command for the init containers used to place files and change permissions in the rstudio pods
 */}}
 {{- define "rstudio.init-container-commands" -}}
-cp -anrL /opt/configs/readonly/rstudio/ /home/;
-chown -R rstudio:rstudio /home/rstudio
+cp -anrL /opt/configs/readonly/rstudio/. {{ .Values.persistence.mountPath }};
 {{- end -}}
 
