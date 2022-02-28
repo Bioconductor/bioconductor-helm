@@ -74,10 +74,24 @@ Return which PVC to use
 {{- end -}}
 
 {{/*
+Return which PVC to use for libraries
+*/}}
+{{- define "bioconductor.librariesClaimName" -}}
+{{- if .Values.libraries.persistence.separateClaim.existingClaim -}}
+{{- printf "%s" .Values.libraries.persistence.separateClaim.existingClaim -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name .Values.libraries.persistence.separateClaim.name -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Creates the bash command for the init containers used to place files and change permissions in the rstudio pods
 */}}
 {{- define "bioconductor.init-container-commands" -}}
 cp -anrL /opt/configs/readonly/rstudio/ /home/;
-chown -R rstudio:rstudio /home/rstudio
+chown -R rstudio:rstudio /home/rstudio;
+{{- if and .Values.libraries.persistence.enabled (not .Values.libraries.persistence.separateClaim.enabled) }}
+mkdir -p {{.Values.persistence.mountPath}}/persisted-library/R;
+{{- end }}
 {{- end -}}
 
