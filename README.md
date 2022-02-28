@@ -33,6 +33,7 @@ This Helm chart can theoretically be run on any Kubernetes cluster. Below are a 
 | [Local minikube](https://github.com/Bioconductor/bioconductor-helm#deploy-locally-with-minikube) |
 | [MS Azure AKS](https://github.com/Bioconductor/bioconductor-helm#deploy-on-the-microsoft-azure-cloud-on-an-aks-cluster) |
 | [Google Kubernetes Engine](https://github.com/Bioconductor/bioconductor-helm#deploy-on-google-cloud-on-a-gke-cluster) |
+| [Amazon Web Services' Elastic Kubernetes Service](https://github.com/Bioconductor/bioconductor-helm#deploy-on-amazon-web-services-on-an-eks-cluster) |
 
 ---
 
@@ -268,4 +269,88 @@ Note: You will be prompted for confirmation. Also keep in mind that the `default
 
 ```bash
 gcloud container clusters delete my-gke-cluster --zone us-east1-b 
+```
+
+---
+
+## Deploy on Amazon Web Services on an `EKS` cluster
+This assumes that you have `eksctl` installed ([how to install](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html)), and that you have [proper IAM permissions](https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonelastickubernetesservice.html).
+
+
+### Starting the deployment
+
+1. Start `EKS` cluster
+
+If you prefer to launch the EKS cluster from the web portal, or already have an existing cluster, you can skip to step 2.
+```bash
+eksctl create cluster --name=my-cluster --nodes=1 --node-volume-size=100 
+```
+
+---
+
+2. Point the kubeconfig context to the EKS cluster (if you launched the cluster in the CLI, the context should have been switched by the create command)
+
+```bash
+eksctl utils write-kubeconfig --cluster=my-cluster
+```
+
+---
+
+3. Helm install chart with example configuration file
+
+This configuration notably has RStudio running with a hardcoded password. Since your cluster will be publicly available on the internet, it is recommended you change the password in this file.
+
+This example also uses a 10Gi Google standard SSD disk for persistence. This solution will not work well with multi-node clusters, as it is a `ReadWriteOnce` storage class, but will work on single-node clusters as is the one launched in this example.
+
+```bash
+helm install mybioc bioconductor-helm/bioconductor -f bioconductor-helm/examples/eks-vals.yaml
+```
+
+---
+
+4. Check status of pods and wait until it is up and healthy
+
+If this is your first time running the chart, keep in mind that it will take a few minutes for the container images to be pulled and extracted.
+```bash
+# See pods status
+kubectl get pods
+# See recent events
+kubectl get events
+# Wait until the deployment is ready
+kubectl wait --for=condition=available --timeout=600s deployment/mybioc-bioconductor
+
+```
+
+---
+
+4. Print LoadBalancer IP
+
+Once the deployment is ready, you can now access RStudio at the LoadBalancer IP.
+```bash
+echo $(kubectl get svc mybioc-bioconductor --template "{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}")
+```
+
+---
+
+5. Access the public IP address in a web browser
+
+RStudio should be running at the public IP address printed by the command above.
+
+By default, you can login with user `rstudio` and the password you provided in the values file.
+
+---
+
+### Stopping the deployment
+
+1. Delete Helm release
+```bash
+helm delete mybioc
+```
+
+---
+
+2. Delete the EKS cluster
+
+```bash
+eksctl delete cluster --name=my-cluster
 ```
