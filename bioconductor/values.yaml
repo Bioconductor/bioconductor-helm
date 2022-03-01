@@ -120,7 +120,7 @@ mutableConfigs:
     subPath: ""
     contents: |
       {{- if .Values.libraries.persistence.separateClaim.enabled }}
-      R_LIBS={{ .Values.libraries.persistence.separateClaim.mountPath }}
+      R_LIBS_USER={{ .Values.libraries.persistence.separateClaim.mountPath }}
       {{- else }}
-      R_LIBS={{.Values.persistence.mountPath}}/persisted-library/R
+      R_LIBS_USER={{.Values.persistence.mountPath}}/persisted-library/R
       {{- end }}
