@@ -18,3 +18,11 @@ jobs:
           charts-token: ${{ secrets.HELM_CHARTS_TOKEN }}
           github-labels: ${{ join(github.event.pull_request.labels.*.name, ', ') }}
           git-branch: ${{ github.event.pull_request.base.ref }}
+      - uses: cloudve/helm-ci@master
+        with:
+          chart-name: bioconductor
+          charts-repo: cloudve/helm-charts
+          github-token: ${{ secrets.HELM_CHARTS_TOKEN }}
+          charts-token: ${{ secrets.HELM_CHARTS_TOKEN }}
+          github-labels: ""
+          git-branch: ${{ github.event.pull_request.base.ref }}
