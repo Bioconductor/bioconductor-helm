@@ -89,10 +89,10 @@ Creates the bash command for the init containers used to place files and change 
 */}}
 {{- define "bioconductor.init-container-commands" -}}
 cp -anrL /opt/configs/readonly/rstudio/ /home/;
-chown -R rstudio:rstudio /home/rstudio;
 {{- if and .Values.libraries.persistence.enabled (not .Values.libraries.persistence.separateClaim.enabled) }}
 mkdir -p {{.Values.persistence.mountPath}}/persisted-library/R;
 chown -R rstudio:rstudio {{.Values.persistence.mountPath}}/persisted-library/R;
 {{- end }}
+chown -R rstudio:rstudio /home/rstudio;
 {{- end -}}
 
