@@ -88,10 +88,10 @@ Return which PVC to use for libraries
 Creates the bash command for the init containers used to place files and change permissions in the rstudio pods
 */}}
 {{- define "bioconductor.init-container-commands" -}}
-cp -anrL /opt/configs/readonly/rstudio/ /home/;
-chown -R rstudio:rstudio /home/rstudio;
 {{- if and .Values.libraries.persistence.enabled (not .Values.libraries.persistence.separateClaim.enabled) }}
 mkdir -p {{.Values.persistence.mountPath}}/persisted-library/R;
 {{- end }}
+cp -anrL /opt/configs/readonly/rstudio/ /home/;
+chown -R rstudio:rstudio /home/rstudio;
 {{- end -}}
 
