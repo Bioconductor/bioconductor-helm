@@ -33,10 +33,6 @@ spec:
               subPath: {{ $entry.fileName }}
             {{- end -}}
             {{- end }}
-            {{- if and .Values.libraries.persistence.enabled .Values.libraries.persistence.separateClaim.enabled }}
-            - name: libraries
-              mountPath: {{.Values.libraries.persistence.separateClaim.mountPath}}
-            {{- end }}
             - name: rstudio-data
               mountPath: {{.Values.persistence.mountPath}}
               subPath: rstudio
@@ -74,6 +70,10 @@ spec:
               mountPath: /opt/configs/readonly/rstudio/{{$entry.subPath}}/{{ $entry.fileName }}
               subPath: {{ $entry.fileName }}
             {{- end -}}
+            {{- end }}
+            {{- if and .Values.libraries.persistence.enabled .Values.libraries.persistence.separateClaim.enabled }}
+            - name: libraries
+              mountPath: {{.Values.libraries.persistence.separateClaim.mountPath}}
             {{- end }}
             - name: rstudio-data
               mountPath: {{.Values.persistence.mountPath}}
