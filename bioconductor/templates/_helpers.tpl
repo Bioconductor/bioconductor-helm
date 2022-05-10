@@ -93,5 +93,8 @@ chown -R rstudio:rstudio /home/rstudio;
 {{- if and .Values.libraries.persistence.enabled (not .Values.libraries.persistence.separateClaim.enabled) }}
 mkdir -p {{.Values.persistence.mountPath}}/persisted-library/R;
 {{- end }}
+{{- if .Values.extraInitContainerCommand }}
+{{ tpl .Values.extraInitContainerCommand . }}
+{{- end }}
 {{- end -}}
 

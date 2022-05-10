@@ -124,3 +124,5 @@ mutableConfigs:
       {{- else }}
       R_LIBS_USER={{.Values.persistence.mountPath}}/persisted-library/R
       {{- end }}
+
+extraInitContainerCommand: ""
