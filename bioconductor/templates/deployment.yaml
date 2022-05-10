@@ -33,6 +33,13 @@ spec:
               subPath: {{ $entry.fileName }}
             {{- end -}}
             {{- end }}
+            {{- range $entry := .Values.configs }}
+            {{ if $entry -}}
+            - name: rstudio-conf-files
+              mountPath: {{ $entry.path }}
+              subPath: {{ $entry.fileName }}
+            {{- end -}}
+            {{- end }}
             - name: rstudio-data
               mountPath: {{.Values.persistence.mountPath}}
               subPath: rstudio
@@ -55,14 +62,14 @@ spec:
             - name: http
               containerPort: 8787
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
+          # livenessProbe:
+          #   httpGet:
+          #     path: {{$host := index .Values.ingress.hosts 0}}{{$path := index $host.paths 0}}{{$path.path}}
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: {{$host := index .Values.ingress.hosts 0}}{{$path := index $host.paths 0}}{{$path.path}}
+          #     port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
@@ -70,6 +77,13 @@ spec:
             {{ if $entry -}}
             - name: rstudio-mutable-conf-files
               mountPath: /opt/configs/readonly/rstudio/{{$entry.subPath}}/{{ $entry.fileName }}
+              subPath: {{ $entry.fileName }}
+            {{- end -}}
+            {{- end }}
+            {{- range $entry := .Values.configs }}
+            {{ if $entry -}}
+            - name: rstudio-conf-files
+              mountPath: {{ $entry.path }}
               subPath: {{ $entry.fileName }}
             {{- end -}}
             {{- end }}
@@ -103,6 +117,14 @@ spec:
           {{- else }}
           configMap:
             name: {{ template "bioconductor.fullname" . }}-mutableconfigs
+          {{- end }}
+        - name: rstudio-conf-files
+          {{- if .Values.useSecretConfigs }}
+          secret:
+            secretName: {{ template "bioconductor.fullname" . }}-configs
+          {{- else }}
+          configMap:
+            name: {{ template "bioconductor.fullname" . }}-configs
           {{- end }}
         - name: rstudio-data
           {{- if .Values.persistence.enabled }}

@@ -1,6 +1,6 @@
 apiVersion: v1
 metadata:
-  name: {{ include "bioconductor.fullname" . }}-configs
+  name: {{ include "bioconductor.fullname" . }}-mutableconfigs
   labels:
     app.kubernetes.io/name: {{ include "bioconductor.name" . }}
     helm.sh/chart: {{ include "bioconductor.chart" . }}
@@ -14,7 +14,7 @@ stringData:
 kind: ConfigMap
 data:
 {{- end }}
-  {{- range $entry := .Values.configs -}}
+  {{- range $entry := .Values.mutableConfigs -}}
   {{- if $entry -}}
   {{- $entry.fileName | nindent 4 }}: |
     {{- tpl $entry.contents $ | nindent 8 }}

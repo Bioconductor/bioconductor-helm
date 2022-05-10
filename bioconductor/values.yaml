@@ -128,3 +128,12 @@ mutableConfigs:
       {{- end }}
 
 extraInitContainerCommand: ""
+
+configs:
+  # Note: these files will get overridden if using any rocker env 
+  # variables that override the conf files (eg: DISABLE_AUTH)
+  - fileName: "rserver.conf"
+    path: "/etc/rstudio/rserver.conf"
+    contents: |
+      www-root-path={{$host := index .Values.ingress.hosts 0}}{{$path := index $host.paths 0}}{{$path.path}}
+      rsession-which-r=/usr/local/bin/R
